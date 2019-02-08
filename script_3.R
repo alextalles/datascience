@@ -1,7 +1,4 @@
-######################################
-## Implementando Modelo LogÌstico
-
-# Removendo todas as vari·veis no workspace
+# Removendo todas as vari√°veis no workspace
 rm(list=ls(all=TRUE))
 setwd("C:/Users/Alex Talles/Desktop")
 
@@ -22,7 +19,7 @@ View(dadosTitanic)
 dadosTitanic$Survived2 <- ifelse(dadosTitanic$Survived == "No", 0, 1)
 head(dadosTitanic)
 
-# An·lise Descritiva:
+# An√°lise Descritiva:
 summary(dadosTitanic)
 
 tabClass <- with(dadosTitanic, CrossTable(Class, Survived, format ="SAS", prop.r = TRUE))
@@ -30,7 +27,7 @@ tabClass
 
 
 #############################################################
-# Porque n„o utilizar o modelo de regress„o linear?
+# Porque n√£o utilizar o modelo de regress√£o linear?
 model <- lm(Survived2~Class, data=dadosTitanic)
 
 summary(model)
@@ -39,53 +36,53 @@ summary(model)
 ypred <- model$fitted.values
 summary(ypred)
 
-# N„o normalidade dos resÌduos: 
+# N√£o normalidade dos res√≠duos: 
 r <- model$residuals
 hist(r)
 
 qqnorm(r)
 qqline(r,col="red")
 
-# Modelo logÌstico
+# Modelo log√≠stico
 modClass <- glm(Survived2~Class,family=binomial,data=dados)
 summary(modClass)
 
-# An·lise dos coeficientes: 
-# As probabilidades de pessoas da primeira e segunda classe sobreviverem ao naufr·gio 
-# s„o significativamente diferentes da chance de pessoas da terceira classe sobreviverem (p-valor < 0,05)
-# A probabilidade de uma pessoa da tripulaÁ„o sobreviver ao naufr·gio n„o È significativamente diferente
-# da probabilidade de uma pessoa da terceira classe sobreviver ao naufr·gio (p-valor > 0,05)
+# An√°lise dos coeficientes: 
+# As probabilidades de pessoas da primeira e segunda classe sobreviverem ao naufr√°gio 
+# s√£o significativamente diferentes da chance de pessoas da terceira classe sobreviverem (p-valor < 0,05)
+# A probabilidade de uma pessoa da tripula√ß√£o sobreviver ao naufr√°gio n√£o √© significativamente diferente
+# da probabilidade de uma pessoa da terceira classe sobreviver ao naufr√°gio (p-valor > 0,05)
 
-# Mudando a classe de referÍncia:
+# Mudando a classe de refer√™ncia:
 dados$Class <- relevel(dados$Class,ref="3rd")
 modClass <- glm(Survived2~Class,family=binomial,data=dados)
 summary(modClass)
 
-# Raz„o de chances:
+# Raz√£o de chances:
 cbind(modClass$coefficients,
-      razao_chances=exp(coef(modClass))) # coef(fitlog) reporta sÛ coef
+      razao_chances=exp(coef(modClass))) # coef(fitlog) reporta s√≥ coef
 
-# InterpretaÁ„o dos coeficientes: 
-# A chance de uma pessoa da primeira classe sobreviver ao naufr·gio do 
-# Titanic È 4,93 vezes maior do que a chance de uma pessoa da terceira classe sobreviver.
+# Interpreta√ß√£o dos coeficientes: 
+# A chance de uma pessoa da primeira classe sobreviver ao naufr√°gio do 
+# Titanic √© 4,93 vezes maior do que a chance de uma pessoa da terceira classe sobreviver.
 
-# A chance de uma pessoa da tripulaÁ„o sobreviver ao naufr·gio do Titanic È 
+# A chance de uma pessoa da tripula√ß√£o sobreviver ao naufr√°gio do Titanic √© 
 # 0,93 vezes maior do que a chance de uma pessoa da terceira classe sobreviver.
 0.9344041^(-1)
-# A chance de uma pessoa da tripulaÁ„o sobreviver ao naufr·gio do titanic È 7% menor do que a chance 
-# de uma pessoa da terceira classe sobreviver.. MAS A DIFEREN«A ENTRE A TRIPULA«√O E A TERCEIRA CLASSE N√O … SIGNIFICATIVA!!!
+# A chance de uma pessoa da tripula√ß√£o sobreviver ao naufr√°gio do titanic √© 7% menor do que a chance 
+# de uma pessoa da terceira classe sobreviver.. MAS A DIFEREN√áA ENTRE A TRIPULA√á√ÉO E A TERCEIRA CLASSE N√ÉO √â SIGNIFICATIVA!!!
 
 #############################################################
-# Ajustando o modelo logÌstico completo
+# Ajustando o modelo log√≠stico completo
 mod_logistico <- glm(Survived~Age+Sex+Class,data=dados,family=binomial)
 summary(mod_logistico)
 
-# Raz„o de chances:
+# Raz√£o de chances:
 cbind(mod_logistico$coefficients, # Coefficients reporta coef, ep, z e p-value
-      razao_chances=exp(coef(mod_logistico))) # coef(fitlog) reporta sÛ coef
+      razao_chances=exp(coef(mod_logistico))) # coef(fitlog) reporta s√≥ coef
 
 #====================================================
-# Modelo logÌstico:
+# Modelo log√≠stico:
 # Probabilidades preditas:
 
 probs_preditas <- mod_logistico$fitted.values
@@ -96,18 +93,18 @@ dados_predito <- data.frame(dados,yhat)
 # Ordenando os resultados:
 arrange(unique(dados_predito[,-c(4,5)]),yhat)
 
-#PrediÁıes:
+#Predi√ß√µes:
 predict(mod_logistico,newdata = data.frame(Sex="Female",Age="Child",Class="1st"),type="response") # probabilidade predita
 
-predict(mod_logistico,newdata = data.frame(Sex="Female",Age="Child",Class="1st"),type="link") # N√O … PROBABILIDADE!!!
+predict(mod_logistico,newdata = data.frame(Sex="Female",Age="Child",Class="1st"),type="link") # N√ÉO √â PROBABILIDADE!!!
 
 
 #######################################################################################################
-### ClassificaÁ„o:
+### Classifica√ß√£o:
 
 dados_predito$survived_predito <- ifelse(dados_predito$yhat>0.5,1,0)
 
-### Erros de classificaÁ„o:
+### Erros de classifica√ß√£o:
 with(dados_predito,table(Survived2,survived_predito))
 
 
