@@ -1,8 +1,7 @@
-#TRABALHO PRÁTICO DE ANÁLISES ESTATÍSTICAS
 
 require(ggplot2)
 
-#DEFININDO O DIRETÓRIO
+#DEFININDO O DIRETÃ“RIO
 setwd("C:/Users/Alex Talles/Desktop/Lista_1_Estatistica")
 
 #IMPORTANDO E CARREGANDO AS BASES DE DADOS. 
@@ -20,22 +19,22 @@ View(familia)
 
 colnames(grandeGrupo) <- c("cod_grupo", "desc_grupo")
 colnames(familia) <- c("cod_ocupacao", "desc_ocupacao")
-colnames(dadosRais) <- c("Ano", "Região", "UF", "cod_ocupacao", "renda_mensal_total", "total_empregos", "total_estabelecimentos")
+colnames(dadosRais) <- c("Ano", "RegiÃ£o", "UF", "cod_ocupacao", "renda_mensal_total", "total_empregos", "total_estabelecimentos")
 
-#INSERINDO NO DATA FRAME DADOSRAIS, AS DESCRIÇÕES DE FAMÍLIA E DE GRANDE GRUPO.
+#INSERINDO NO DATA FRAME DADOSRAIS, AS DESCRIÃ‡Ã•ES DE FAMÃLIA E DE GRANDE GRUPO.
 
 install.packages("stringr")
 require(stringr)
 substr(grandeGrupo)
 
 
-#CALCULANDO A RENDA MENSAL TOTAL E NÚMERO TOTAL DE EMPREGOS POR ESTADO, POR OCUPAÇÃO E POR GRANDE GRUPO.
+#CALCULANDO A RENDA MENSAL TOTAL E NÃšMERO TOTAL DE EMPREGOS POR ESTADO, POR OCUPAÃ‡ÃƒO E POR GRANDE GRUPO.
 
 dataFrameGrandeGrupo <- data.frame("teste","OUTROS GRUPOS")
 colnames(dataFrameGrandeGrupo) <- c("cod_grupo", "desc_grupo")
 dataFrameGrandeGrupo
 
-dataFrameOcupacao <- data.frame("teste","Outras Ocupações")
+dataFrameOcupacao <- data.frame("teste","Outras OcupaÃ§Ãµes")
 colnames(dataFrameOcupacao) <- c("cod_ocupacao", "desc_ocupacao")
 dataFrameOcupacao
 
@@ -48,7 +47,7 @@ totalEmpregosPorEstado <- aggregate(x = c(dadosRais["renda_mensal_total"], dados
 totalEmpregosPorEstado
 
 totalEmpregosPorOcupacao <- aggregate(x = c(dadosRais["renda_mensal_total"], dadosRais["total_empregos"]), 
-                           by = list(Ocupação = dadosRais$cod_ocupacao, Nome_Ocupação = dadosRais$desc_ocupacao), 
+                           by = list(OcupaÃ§Ã£o = dadosRais$cod_ocupacao, Nome_OcupaÃ§Ã£o = dadosRais$desc_ocupacao), 
                            FUN = sum)
 totalEmpregosPorOcupacao
 
@@ -57,7 +56,7 @@ totalEmpregosPorGrandeGrupo <- aggregate(x = c(dadosRais["renda_mensal_total"], 
                               FUN = sum)
 totalEmpregosPorGrandeGrupo
 
-# ORDENANDO OS ESTADOS POR ORDEM DESCRESCENTE DE NÚMERO DE EMPREGOS.
+# ORDENANDO OS ESTADOS POR ORDEM DESCRESCENTE DE NÃšMERO DE EMPREGOS.
 
 install.packages("dplyr")
 require(dplyr)
@@ -65,53 +64,53 @@ require(dplyr)
 totalEmpregosPorEstado <- arrange(totalEmpregosPorEstado, desc(total_empregos))
 totalEmpregosPorEstado
 
-#RETORNANDO A OCUPAÇÃO QUE POSSUI MAIOR NÚMERO DE EMPREGOS NO BRASIL.
+#RETORNANDO A OCUPAÃ‡ÃƒO QUE POSSUI MAIOR NÃšMERO DE EMPREGOS NO BRASIL.
 
 totalEmpregosPorOcupacao <- arrange(totalEmpregosPorOcupacao, desc(total_empregos))
-ocupacaoMaiorNumeroEmpregos <- totalEmpregosPorOcupacao$Nome_Ocupação[1]
+ocupacaoMaiorNumeroEmpregos <- totalEmpregosPorOcupacao$Nome_OcupaÃ§Ã£o[1]
 ocupacaoMaiorNumeroEmpregos
 
-#RETORNANDO A OCUPAÇÃO QUE POSSUI A MAIOR REMUNERAÇÃO MÉDIA E A MENOR.
+#RETORNANDO A OCUPAÃ‡ÃƒO QUE POSSUI A MAIOR REMUNERAÃ‡ÃƒO MÃ‰DIA E A MENOR.
 
 dadosRais$renda_mensal_total=dadosRais$renda_mensal_total/dadosRais$total_empregos
 totalEmpregosPorOcupacao <- aggregate(x= dadosRais["Renda_Media"], 
-                           by = list(Ocupação = dadosRais$cod_ocupacao, Nome_Ocupação = dadosRais$desc_ocupacao), 
+                           by = list(OcupaÃ§Ã£o = dadosRais$cod_ocupacao, Nome_OcupaÃ§Ã£o = dadosRais$desc_ocupacao), 
                            FUN = mean)
 
 totalEmpregosPorOcupacao <- arrange(totalEmpregosPorOcupacao, desc(Renda_Media))
-ocupacaoMaiorRemuneracaoMedia <- totalEmpregosPorOcupacao$Nome_Ocupação[1]
+ocupacaoMaiorRemuneracaoMedia <- totalEmpregosPorOcupacao$Nome_OcupaÃ§Ã£o[1]
 ocupacaoMaiorRemuneracaoMedia
 
 totalEmpregosPorOcupacao <- arrange(totalEmpregosPorOcupacao, Renda_Media)
-ocupacaoMenorRemuneracaoMedia <- totalEmpregosPorOcupacao$Nome_Ocupação[1]
+ocupacaoMenorRemuneracaoMedia <- totalEmpregosPorOcupacao$Nome_OcupaÃ§Ã£o[1]
 ocupacaoMenorRemuneracaoMedia
 
-#RETORNA O NÚMERO DE OCUPAÇÕES QUE POSSUEM REMUNERAÇÃO MÉDIA MENOR QUE R$ 2.000,00.
+#RETORNA O NÃšMERO DE OCUPAÃ‡Ã•ES QUE POSSUEM REMUNERAÃ‡ÃƒO MÃ‰DIA MENOR QUE R$ 2.000,00.
 
 
-numeroOcupacoes <- count(subset(totalEmpregosPorOcupacao, renda_mensal_total < 2000, select = Ocupação:Renda_Média))
+numeroOcupacoes <- count(subset(totalEmpregosPorOcupacao, renda_mensal_total < 2000, select = OcupaÃ§Ã£o:Renda_MÃ©dia))
 numeroOcupacoes
 
-#DENTRE OS TÉCNICOS DE NÍVEL MÉDIO DE MINAS GERAIS, QUAL OCUPAÇÃO POSSUI A MAIOR RENUMERAÇÃO MÉDIA?
+#DENTRE OS TÃ‰CNICOS DE NÃVEL MÃ‰DIO DE MINAS GERAIS, QUAL OCUPAÃ‡ÃƒO POSSUI A MAIOR RENUMERAÃ‡ÃƒO MÃ‰DIA?
 
 ocupacaoMaiorRemuneracaoMediaMG <- arrange(subset(dadosRais, UF == 'MG' & Cod_Grupo == 3, 
                                             select=Cod_Grupo:Renda_Media), desc(Renda_Media))$Desc_Ocupacao[1]
 ocupacaoMaiorRemuneracaoMediaMG
 
 
-#GRÁFICO DE BARRAS REPRESENTANDO O NÚMERO DE EMPREGOS POR GRANDE GRUPO.
+#GRÃFICO DE BARRAS REPRESENTANDO O NÃšMERO DE EMPREGOS POR GRANDE GRUPO.
 
-barplot(totalEmpregosPorEstado, main = "Número de Empregos por Grande Grupo", col = topo.colors())
+barplot(totalEmpregosPorEstado, main = "NÃºmero de Empregos por Grande Grupo", col = topo.colors())
 
-# CALCULANDO O % DE EMPREGOS POR REGIÃO E REPRESENTE EM UM GRÁFICO DE PIZZA REPRESENTANDO TAIS VALORES.
+# CALCULANDO O % DE EMPREGOS POR REGIÃƒO E REPRESENTE EM UM GRÃFICO DE PIZZA REPRESENTANDO TAIS VALORES.
 
 numeroEmpregosPorRegiao <- table(dadosRais[, 2])
 numeroEmpregosPorRegiao
 
-pie(numeroEmpregosPorRegiao, main = "Total de Empregos por Região", labels = c("15,2%", "33,5%", "24,2%", "15,4", "11,5%"), col = c (1, 2, 3, 4, 5))
+pie(numeroEmpregosPorRegiao, main = "Total de Empregos por RegiÃ£o", labels = c("15,2%", "33,5%", "24,2%", "15,4", "11,5%"), col = c (1, 2, 3, 4, 5))
 legend("topright", fill = c(1, 2, 3, 4, 5), legend = c( "Centro-Oeste", "Nordeste", "Norte", "Sudeste", "Sul" ))
 
-#CONSTRUINDO UMA TABELA CRUZADA COM O NÚMERO DE EMPREGOS POR GRANDE GRUPO (LINHAS) E POR REGIÃO (COLUNAS).
+#CONSTRUINDO UMA TABELA CRUZADA COM O NÃšMERO DE EMPREGOS POR GRANDE GRUPO (LINHAS) E POR REGIÃƒO (COLUNAS).
 
 install.packages("questionr")
 require(questionr)
@@ -121,11 +120,11 @@ percentualEmpregosPorGrandeGrupo_E_PorRegiao <- aggregate(x = c(dadosRais["Total
                                            by = list(Grupo = dadosRais$Cod_Grupo, UF = dadosRais$Regiao), 
                                            FUN = sum)
 
-names(percentualEmpregosPorGrandeGrupo_E_PorRegiao) <- c("Grupo", "Região", "Total_Empregos")
+names(percentualEmpregosPorGrandeGrupo_E_PorRegiao) <- c("Grupo", "RegiÃ£o", "Total_Empregos")
 
-wtd.table(percentualEmpregosPorGrandeGrupo_E_PorRegiao$Grupo, percentualEmpregosPorGrandeGrupo_E_PorRegiao$Região, weights = percentualEmpregosPorGrandeGrupo_E_PorRegiao$Total_Empregos, digits = 4, normwt = FALSE, na.rm = TRUE, na.show = FALSE)
+wtd.table(percentualEmpregosPorGrandeGrupo_E_PorRegiao$Grupo, percentualEmpregosPorGrandeGrupo_E_PorRegiao$RegiÃ£o, weights = percentualEmpregosPorGrandeGrupo_E_PorRegiao$Total_Empregos, digits = 4, normwt = FALSE, na.rm = TRUE, na.show = FALSE)
 
-# CALCULANDO O TOTAL DE ABORTOS (INDUZIDOS E ESPONTÂNEOS)
+# CALCULANDO O TOTAL DE ABORTOS (INDUZIDOS E ESPONTÃ‚NEOS)
 
 totalAbortosInduzidos <- sum(infert$induced)
 totalAbortosInduzidos
@@ -136,8 +135,8 @@ totalAbortosEspontaneos
 totalAbortos <- totalAbortosEspontaneos + totalAbortosInduzidos
 totalAbortos  
 
-# CONSTRUINDO UMA TABELA DE FREQUÊNCIA CRUZADA 
-#ENTRE O NÚMERO TOTAL DE ABORTOS E A ESCOLARIDADE DAS MULHERES.
+# CONSTRUINDO UMA TABELA DE FREQUÃŠNCIA CRUZADA 
+#ENTRE O NÃšMERO TOTAL DE ABORTOS E A ESCOLARIDADE DAS MULHERES.
 
 install.packages("gmodels")
 require(gmodels)
